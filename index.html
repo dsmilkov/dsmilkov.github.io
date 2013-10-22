@@ -1,1 +1,46 @@
-<b> Hello world! :)</b>
+---
+layout: default
+title: Daniel Smilkov, Homepage
+---
+
+<div id="home">
+  <div class="mainitem">
+  	<div class="title">About</div>
+  	<div class="text">I'm currently a graduate student at <a href="http://media.mit.edu">MIT Media Lab</a>. I'm part of <a href="http://macro.media.mit.edu">Macro Connections</a> group advised by <a href="http://chidalgo.com">Cesar Hidalgo</a>. I'm interested in data-mining, statistics and designing algorithms for large real-world networks.</div>
+  </div>
+
+  <div class="mainitem">
+  	<div class="title">Projects</div>
+  	<div class="text">
+  		I'm currently keeping myself busy with <a href="https://immersion.media.mit.edu">Immersion</a> and <a href="http://pulse.media.mit.edu">Place Pulse</a>.
+  	</div>
+  </div>
+  
+  <div class="mainitem">
+  	<div class="title">Blog</div>
+  	<div class="text">
+  		<ul class="posts">
+	    	{% for post in site.posts %}
+	      		<li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
+	    	{% endfor %}
+	  	</ul>
+  	</div>
+  </div>
+  <div class="mainitem">
+  	<div class="title">CV</div>
+  	<div class="text">
+  		You can download my cv <a href="/static/cv-dsmilkov-25Jul2013.pdf">here</a>. For list of publications you can visit my <a href="http://scholar.google.com/citations?user=Ei7OL8IAAAAJ&hl=en">Google Scholar</a> profile. 
+  	<!-- <ul>
+  		<li>D. Smilkov and L. Kocarev, "Influence of the network topology on epidemic spreading", Physical Review E 85, 016114 (2012)</li>
+  		<li>D. Smilkov and L. Kocarev, "Analytically solvable processes on networks", Physical Review E 84, 016104 (2011)</li>
+  		<li>A.Stanoev, D. Smilkov and L. Kocarev, "Identifying communities by influence dynamics in social networks", Physical Review E 84 046102 (2011)</li>
+  		<li>D. Smilkov and L. Kocarev, “Rich-club and page-club coefficients for directed graphs”, Physica A, 389(11), pp. 2290-2299 (2010)</li>
+  		<li>D. Trpevski, D. Smilkov, I. Mishkovski and L. Kocarev, “Vulnerability of labeled networks”, Physica A, 389(23), pp. 5538-5549 (2010)</li>
+  	</ul> -->
+  	</div>
+  </div>
+  <!-- <div class="title">Projects</div>
+  <div class="title">Publications</div>
+  <div class="title">Blog posts</div>
+   -->
+</div>
