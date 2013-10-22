@@ -128,7 +128,7 @@ We leave as an exercise for the reader to implement <code>getAsymmetricContacts<
 
 <sup>
 	3. <b>HINT</b> For an outgoing direction, compute the probability that we are not going to receive back an email for every email we send. It should be obvious for an incoming direction at this point.
-	<br/>4. Occasionally, I get emails that require my input, so I email them back, thus satisfying the collaborator threshold.
+	<br/>4. Occasionally, I get emails that require my input, so I email back, and these sources satisfy the collaborator threshold.
 </sup>
 
 
