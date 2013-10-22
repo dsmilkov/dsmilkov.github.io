@@ -10,8 +10,8 @@ First, you need to be logged in to Immersion<sup>1</sup>. To download the email 
 
 
 {% highlight python %}
-{ 'fromField': ['Deepak Jagdish', 'deepak.jagdish@gmail.com'],
-  'toField': [['Daniel Smilkov', 'dsmilkov@gmail.com'],['Cesar Hidalgo', 'hidalgo@mit.edu']],
+{ 'fromField': ['Deepak Jagdish', 'email1@email.com'],
+  'toField': [['Daniel Smilkov', 'email2@email.com'],['Cesar Hidalgo', 'email3@email.com']],
   'dateField': 1372743719,
   'isSent': False,
   'threadid': '1439426117975266137',
@@ -68,7 +68,7 @@ We will use this set to filter all the results that involve people, to make sure
 
 ##Analyzing the email metadata
 
-Now, let's find the most "private" collaborators, i.e. people with whom we have a high likelihood of exchanging a private (one to one) email without cc'ing anyone. In other words, we want to construct a list of tuples, each tuple consisting of an email address and the probability of exchanging a private email, e.g. <code>('dsmilkov@gmail.com',0.657)</code>. The probability is computed by dividing the number of private emails by the total number of exchanged emails.
+Now, let's find the most "private" collaborators, i.e. people with whom we have a high likelihood of exchanging a private (one to one) email without cc'ing anyone. In other words, we want to construct a list of tuples, each tuple consisting of an email address and the probability of exchanging a private email, e.g. <code>('email3@email.com',0.657)</code>. The probability is computed by dividing the number of private emails by the total number of exchanged emails.
 
 {% highlight python %}
 def getPrivateContacts(emails, collaborators):
