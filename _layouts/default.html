@@ -21,7 +21,7 @@
             var titles = $(".title");
             var len = titles.length;
             titles.shuffleLetters();
-            $("a").attr("target","_blank");
+            //$("a").attr("target","_blank");
             setInterval(function() {
               $($(".title")[idx]).shuffleLetters();
               idx = (idx+1) % len;

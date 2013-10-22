@@ -2,7 +2,7 @@
 layout: post
 title:  "Analyze your email metadata"
 date:   2013-10-21
-categories: immersion metadata mozfest tutorial
+tags: [immersion, metadata, mozfest, tutorial]
 ---
 
 ##Downloading email headers
