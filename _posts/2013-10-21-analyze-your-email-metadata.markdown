@@ -25,7 +25,7 @@ The <code>toField</code> contains both <code>TO</code> and <code>CC</code> entri
 </sup>
 
 ##Cleaning the data
-Real data is never clean, and the first you want to do when analyzing data is to clean it. Here is a python code that reads all the emails and filter out the invalid ones<sup>2</sup>.
+The first thing you want to do when analyzing data is to clean it. Here is a python code that reads all the emails and filters out the invalid ones<sup>2</sup>.
 {% highlight python %}
 import json
     
@@ -37,10 +37,10 @@ emails = filterEmails(json.load(f))
 {% endhighlight %}
     
     
-<sup>2. There are several things that can make an email invalid: missing  <code>FROM</code> or <code>TO</code> field, invalid timestamp, or simply being an empty (<code>None</code>) object.
+<sup>2. There are several things that can make an email invalid; missing  <code>FROM</code> or <code>TO</code> field, invalid timestamp, or simply being an empty object.
 </sup>
 
-Now that we have the filtered email headers let's find the collaborators, i.e., we want to filter out anything that is a mailing list (such as company-wide lists, project based lists etc.) and a promotion list (such as Facebook updates, LinkedIn updates, etc.). A simple but effective way to do is to assume that person A is a collaborator if we have both sent to A, and received from A at least K emails. To find the collaborators,  we will first count the number of sent and received emails for every email address. We will use <code>Counter</code>, a nice dictionary-based structure for counting:
+Furthermore, we want to filter out anything that is a mailing list (e.g. company-wide lists, project based lists) or a promotion list (e.g. Facebook and LinkedIn updates). A simple but effective way to do is to keep email A if we have both sent and received at least K emails with A. To do this, we first count the number of sent and received emails for every email address. We will use <code>Counter</code>, a nice dictionary-based structure for counting:
 
 {% highlight python %}
 from collections import Counter
@@ -56,7 +56,7 @@ def getSentRcvCounters(emails):
 return sentCounter, rcvCounter
 {% endhighlight %}
 
-Now, from the sent and receive statistics, we can easily compute the set of all collaborators:
+Now, from the sent and receive statistics, we can easily obtain the set of filtered email addresses, which at this point makes sense to refer to them as collaborators:
 
 {% highlight python %}
 def getCollaborators(emails, K):
@@ -64,11 +64,11 @@ def getCollaborators(emails, K):
   return set([person for person in sentCounter if sentCounter[person] >= K and rcvCounter[person] >= K])
 {% endhighlight %}
 
-We will use this set to filter all the results that involve people, to make sure there are collaborators, and not mailing lists or promotion lists.
+This set will help us make sure that all future results that involve email addresses belong to collaborators, and not mailing lists or promotion lists.
 
 ##Analyzing the email metadata
 
-Now, let's find the most "private" collaborators, i.e. people with whom we have a high likelihood of exchanging a private (one to one) email without cc'ing anyone. In other words, we want to construct a list of tuples, each tuple consisting of an email address and the probability of exchanging a private email, e.g. <code>('email3@email.com',0.657)</code>. The probability is computed by dividing the number of private emails by the total number of exchanged emails.
+Now, let's find the most "private" collaborators, i.e. people with whom we have a high likelihood of exchanging a private (one to one) email without cc'ing anyone else. In other words, we want to construct a list of tuples, each tuple consisting of an email address and the probability of exchanging a private email, e.g. <code>('email3@email.com',0.657)</code>. The probability is computed by dividing the number of private emails by the total number of exchanged emails.
 
 {% highlight python %}
 def getPrivateContacts(emails, collaborators):
@@ -90,7 +90,7 @@ def getPrivateContacts(emails, collaborators):
   return people
 {% endhighlight %}
 
-There is a problem though. Exchanging 80 private emails out of 100 gives the same probability as exchanging 4 out of 5 (0.8). However, the second estimate is much more noisy that the first, i.e. it is not unlikely to get 4 private emails out of 5 even when the probability of a private email is 0.4 instead of 0.8. To correct for this uncertainty, we will use [Wilson score interval][wilson-score] which gives a confidence interval around the estimated probability. The lower bound of the 99% confidence interval for 4/5 is 0.28 whereas for 80/100 is 0.68. This tells us that we are 99% confident that the actual probability is more than 0.28 for the 4/5 case, and more than 0.68 for the 80/100 case. Here is an implementation of the score interval:
+There is a problem though. Exchanging 80 private emails out of 100 gives the same probability as exchanging 4 out of 5 (0.8). However, the second estimate is much more noisy that the first, i.e. it is not unlikely to get 4 private emails out of 5 even when the probability of a private email is only 0.4 instead of 0.8. To correct for this uncertainty, we will use [Wilson score interval][wilson-score] which gives a confidence interval around the estimated probability. The lower bound of the 99% confidence interval for 4/5 is 0.28 whereas for 80/100 is 0.68. This tells us that we are 99% confident that the actual probability is more than 0.28 for the 4/5 case, and more than 0.68 for the 80/100 case. Here is an implementation of the score interval:
 
 {% highlight python %}   
 from math import sqrt
@@ -105,9 +105,9 @@ Now we can change the implementation for private collaborators to account for th
 
     people = [(person, getLowerBound(pvtCounter[person],counter[person])) for person in pvtCounter if person in collaborators]
 
-To print the top 10 private collaborators, we can run: <code>print getPrivateContacts(emails, collaborators)[:10]</code>.
+To print the top 10 private collaborators, we can run <code>print getPrivateContacts(emails, collaborators)[:10]</code>.
 
-Similarly, we can get the people with whom we have to most symmetric conversation, i.e. we want to have a high likelihood of getting an email back for every email we sent, and vice versa. To estimate this probability, we first need to identify the direction of the relationship, i.e. if we are sending more to person A than receiving, then it's an outgoing direction, and we want to estimate the probability of receiving an email for every email we send, i.e. # rcv / #sent. Conversely, if we are receiving more emails than sending, then it's an incoming direction, and we estimate the probability of sending back an email to person A, for every email we receive from him/her, i.e. #sent / #rcv. We will still use the Wilson score interval to account for the uncertainty:
+Similarly, we can get the people with whom we have the most symmetric relationship, i.e. we want to have a high likelihood of getting an email back for every email we sent, and vice versa. To estimate this probability, we first need to identify the direction of the relationship, i.e. if we are sending more to person A than receiving, then it's an outgoing direction, and we want to estimate the probability of receiving an email for every email we send, i.e. # rcv / #sent. Conversely, if we are receiving more emails than sending, then it's an incoming direction, and we estimate the probability of sending back an email to person A, for every email we receive from him/her, i.e. #sent / #rcv. We will again use the Wilson score interval to account for the uncertainty:
 
 {% highlight python %}
 def getSymmetricContacts(emails, collaborators):
