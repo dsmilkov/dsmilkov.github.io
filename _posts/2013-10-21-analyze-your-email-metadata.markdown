@@ -6,8 +6,7 @@ tags: [immersion, metadata, mozfest, tutorial]
 ---
 
 ##Downloading email headers
-First, you need to be logged in to Immersion<sup>1</sup>. To download the email headers in JSON format, visit http://immersion.media.mit.edu/downloademails. The filename is <code>allemails.json</code>. If you are not logged in, you will be redirected to the login page. Here is a sample email entry:
-
+First, you need to be logged in to [Immersion](https://immersion.media.mit.edu)<sup>1</sup>. To download the email headers in JSON format, visit <a href="https://immersion.media.mit.edu/downloademails" target="_blank">immersion.media.mit.edu/downloademails</a>. If you are not logged in, you will be redirected to the login page. The filename is <code>allemails.json</code> and it contains the metadata of every email you have exchanged. A sample email entry from the JSON file is shown below. There will be many more such entries in the JSON file.
 
 {% highlight python %}
 { 'fromField': ['Deepak Jagdish', 'email1@email.com'],
@@ -25,14 +24,14 @@ The <code>toField</code> contains both <code>TO</code> and <code>CC</code> entri
 </sup>
 
 ##Cleaning the data
-The first thing you want to do when analyzing data is to clean it. Here is a python code that reads all the emails and filters out the invalid ones<sup>2</sup>.
+The first thing you want to do when analyzing data is to clean it. We will walk through a simple python script that parses your email headers and filters out the invalid ones<sup>2</sup>.
 {% highlight python %}
 import json
     
 def filterEmails(emails):
   return [email for email in emails if email is not None and email['toField'] and email['fromField']]
 
-f = open('/Users/dsmilkov/Downloads/allemails.json')
+f = open('/PATH_TO_JSON_FILE/allemails.json')
 emails = filterEmails(json.load(f))
 {% endhighlight %}
     
@@ -53,22 +52,24 @@ def getSentRcvCounters(emails):
     else:
       person = email['fromField']
       rcvCounter[person[1]] += 1
-return sentCounter, rcvCounter
+  return sentCounter, rcvCounter
 {% endhighlight %}
 
-Now, from the sent and receive statistics, we can easily obtain the set of filtered email addresses, which at this point makes sense to refer to them as collaborators:
+Now, from the sent and received statistics, we can easily obtain the set of *filtered email addresses*, which we will refer to as *collaborators* from now on:
 
 {% highlight python %}
 def getCollaborators(emails, K):
   sentCounter, rcvCounter = getSentRcvCounters(emails)
   return set([person for person in sentCounter if sentCounter[person] >= K and rcvCounter[person] >= K])
+collaborators = getCollaborators(emails,5) # obtain the collaborators for K=5
 {% endhighlight %}
 
-This set will help us make sure that all future results that involve email addresses belong to collaborators, and not mailing lists or promotion lists.
+This set (collaborators) will help us make sure that all future results that involve email addresses belong to collaborators, and not mailing lists or promotion lists.
 
 ##Analyzing the email metadata
+At this point, we are ready to ask some interesting questions about our own metadata.
 
-Now, let's find the most "private" collaborators, i.e. people with whom we have a high likelihood of exchanging a private (one to one) email without cc'ing anyone else. In other words, we want to construct a list of tuples, each tuple consisting of an email address and the probability of exchanging a private email, e.g. <code>('email3@email.com',0.657)</code>. The probability is computed by dividing the number of private emails by the total number of exchanged emails.
+Let's find the most "private" collaborators, i.e. people with whom we have a high likelihood of exchanging a private (one to one) email without cc'ing anyone else. In other words, we want to construct a list of tuples, each tuple consisting of an email address and the probability of exchanging a private email, e.g. <code>('person@email.com',0.657)</code>. The probability is computed by dividing the number of private emails by the total number of exchanged emails with that person.
 
 {% highlight python %}
 def getPrivateContacts(emails, collaborators):
@@ -90,9 +91,15 @@ def getPrivateContacts(emails, collaborators):
   return people
 {% endhighlight %}
 
-There is a problem though. Exchanging 80 private emails out of 100 gives the same probability as exchanging 4 out of 5 (0.8). However, the second estimate is much more noisy that the first, i.e. it is not unlikely to get 4 private emails out of 5 even when the probability of a private email is only 0.4 instead of 0.8. To correct for this uncertainty, we will use [Wilson score interval][wilson-score] which gives a confidence interval around the estimated probability. The lower bound of the 99% confidence interval for 4/5 is 0.28 whereas for 80/100 is 0.68. This tells us that we are 99% confident that the actual probability is more than 0.28 for the 4/5 case, and more than 0.68 for the 80/100 case. Here is an implementation of the score interval:
+Let's print the top 20 private collaborators:
+{% highlight python %}
+for person, score in getPrivateContacts(emails, collaborators)[:20]:
+  print person,'\t',score
+print '-----------------'
+{% endhighlight %}
+It is easy to see that there is a problem :-). Exchanging 80 private emails out of 100 gives the same probability as exchanging 4 out of 5 (0.8). However, the second estimate is much more noisy that the first, i.e. it is not unlikely to get 4 heads out of 5 tosses of an unbiased coin and incorrectly estimate that there is 80% change of getting heads. To correct for this uncertainty, we will use [Wilson score interval][wilson-score] which gives a confidence interval around the estimated probability. The lower bound of the 99% confidence interval for 4/5 is 0.28 whereas for 80/100 is 0.68. This tells us that we are 99% confident that the actual probability is more than 0.28 for the 4/5 case, and more than 0.68 for the 80/100 case. Here is an implementation of the score interval. This code snippet must be inserted before the implementation of <code>getPrivateContacts</code>.
 
-{% highlight python %}   
+{% highlight python %}
 from math import sqrt
 def getLowerBound(pos, n):
   if n == 0: return 0
@@ -101,34 +108,48 @@ def getLowerBound(pos, n):
   return (phat + z*z/(2*n) - z * sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
 {% endhighlight %}
 
-Now we can change the implementation for private collaborators to account for this uncertainty by changing the 3rd to last line to:
+Now we can change the implementation of <code>getPrivateContacts</code> to account for this uncertainty by changing this line
+{% highlight python %}
+people = [(person, float(pvtCounter[person])/counter[person]) for person in pvtCounter if person in collaborators]
+{% endhighlight %}
 
-    people = [(person, getLowerBound(pvtCounter[person],counter[person])) for person in pvtCounter if person in collaborators]
-
-To print the top 10 private collaborators, we can run <code>print getPrivateContacts(emails, collaborators)[:10]</code>.
-
-Similarly, we can get the people with whom we have the most symmetric relationship, i.e. we want to have a high likelihood of getting an email back for every email we sent, and vice versa. To estimate this probability, we first need to identify the direction of the relationship, i.e. if we are sending more to person A than receiving, then it's an outgoing direction, and we want to estimate the probability of receiving an email for every email we send, i.e. # rcv / #sent. Conversely, if we are receiving more emails than sending, then it's an incoming direction, and we estimate the probability of sending back an email to person A, for every email we receive from him/her, i.e. #sent / #rcv. We will again use the Wilson score interval to account for the uncertainty:
+to this line
 
 {% highlight python %}
-def getSymmetricContacts(emails, collaborators):
+people = [(person, getLowerBound(pvtCounter[person],counter[person])) for person in pvtCounter if person in collaborators]
+{% endhighlight %}
+
+Similarly, we can get the people with whom we have the most asymmetric relationship, i.e. we want to have a high likelihood of not getting an email back for every email we sent, and vice versa. To estimate this probability, we first need to identify the direction of the relationship. If it's an outgoing direction (we are sending more to person A than receiving), we want to estimate the probability of not receiving an email for every email we send, i.e. (#sent-#rcv) / #sent. Conversely, if we are receiving more emails than sending, we estimate the probability of not emailing back for every email we receive, i.e. (#rcv-#sent) / #rcv. We will again use the Wilson score interval to account for the uncertainty:
+
+{% highlight python %}
+def getAsymmetricContacts(emails, collaborators):
   sentCounter, rcvCounter = getSentRcvCounters(emails)
   people = []
   for person in sentCounter:
     if person not in collaborators: continue
     sent, rcv = sentCounter[person], rcvCounter[person]
     if (sent > rcv):
-      people.append((person, getLowerBound(rcv, sent), 'ME-->'))
+      people.append((person, getLowerBound(sent-rcv, sent), 'ME-->'))
     else:
-      people.append((person, getLowerBound(sent, rcv), 'ME<--'))
+      people.append((person, getLowerBound(rcv-sent, rcv), 'ME<--'))
   people.sort(key=lambda x: x[1], reverse=True)
   return people
 {% endhighlight %}
 
-We leave as an exercise for the reader to implement <code>getAsymmetricContacts</code>, i.e. contacts with whom we have the most asymmetric communication<sup>3</sup>. In my case, these are usually administrative people that are sending mass emails to the lab<sup>4</sup> or maybe people that are spamming me, or me spamming them :).
+Let's print the top 20 asymmetric collaborators:
+{% highlight python %}
+for person, score, direction in getAsymmetricContacts(emails, collaborators)[:20]:
+  print person,'\t',score
+print '-----------------'
+{% endhighlight %}
+
+We leave as an exercise for the reader to implement <code>getSymmetricContacts</code>, i.e. contacts with whom we have the most symmetric communication<sup>3</sup>.
+
+You can find the entire python file [here](/static/simple-analysis.py).
 
 <sup>
-	3. <b>HINT</b> For an outgoing direction, compute the probability that we are not going to receive back an email for every email we send. It should be obvious for an incoming direction at this point.
-	<br/>4. Occasionally, I get emails that require my input, so I email back, and these sources satisfy the collaborator threshold.
+	3. <b>HINT</b> For an outgoing direction, compute the probability that we are going to receive back an email for every email we send. It should be obvious for an incoming direction at this point.
+	<!-- <br/>4. Occasionally, I get emails that require my input, so I email back, and these sources satisfy the collaborator threshold. -->
 </sup>
 
 
