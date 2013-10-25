@@ -139,7 +139,7 @@ def getAsymmetricContacts(emails, collaborators):
 Let's print the top 20 asymmetric collaborators:
 {% highlight python %}
 for person, score, direction in getAsymmetricContacts(emails, collaborators)[:20]:
-  print person,'\t',score
+  print person, '\t', score, '\t', direction
 print '-----------------'
 {% endhighlight %}
 

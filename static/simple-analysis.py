@@ -74,5 +74,5 @@ def getAsymmetricContacts(emails, collaborators):
   return people
   
 for person, score, direction in getAsymmetricContacts(emails, collaborators)[:20]:
-  print person,'\t',score
+  print person, '\t', score, '\t', direction
 print '-----------------'
