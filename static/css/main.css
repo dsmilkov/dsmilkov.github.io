@@ -83,7 +83,8 @@ ul li {
 }
 
 .container {
-  width: 790px;
+  max-width: 800px;
+  min-width: 400px;
   margin: 48px auto;
   padding: 0;
 }
