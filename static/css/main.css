@@ -97,8 +97,7 @@ ul li {
   padding-bottom: 10px;
   border-top: 1px solid #555;
   margin-top: 35px;
-  font: 13px 'Open Sans', sans;
-  /*text-align: center;*/
+  font-size: 13px;
   color: #555;
 }
 
