@@ -18,7 +18,7 @@ body {
   text-align: left;
 }
 
-a         { color: black; font-weight: 600; }
+a         { color: #326891; }
 /*a:hover   { color: #000; }*/
 /*a:visited { color: #a0a; }*/
 
@@ -103,6 +103,7 @@ ul li {
 }
 
 .text {
+  line-height: 1.44em;
   margin-left: 140px;
   text-align:justify;
 }
