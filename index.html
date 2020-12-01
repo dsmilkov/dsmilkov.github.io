@@ -3,18 +3,38 @@ layout: default
 title: Daniel Smilkov, Homepage
 ---
 
-<div id="home">
-  <div class="mainitem">
-  	<div class="title">About</div>
-  	<div class="text">I'm currently at Google in the <a href="https://research.google.com/bigpicture/">Big Picture Research Group</a>. I got my masters at the <a href="http://media.mit.edu">MIT Media Lab</a> as member of the <a href="http://macro.media.mit.edu">Macro Connections</a> group advised by <a href="http://chidalgo.com">Cesar Hidalgo</a>. I'm interested in machine learning, data visualization, and especially their intersection.</div>
+<div id="home" class="text-gray-800 text-base">
+  <div class="mainitem relative flex items-start">
+    <div class="uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">About</div>
+    <div>
+      Hi there! I'm a member of the <a href="https://research.google/teams/brain/pair/">PAIR team</a>, part of <a
+        href="https://research.google/teams/brain/">Google Brain</a>, working on the intersection of machine
+      learning and visualization.
+      I got my masters at the <a href="http://media.mit.edu">MIT Media Lab</a>, advised by <a
+        href="http://chidalgo.com">Cesar Hidalgo</a>.
+      <p class="mt-4">The work shown below was in collaboration with many talented people from teams inside and
+        outside Google.</p>
+    </div>
   </div>
 
-  <div class="mainitem">
-  	<div class="title">Projects</div>
-  	<div class="text">
-  		While at MIT I co-created <a href="https://immersion.media.mit.edu">Immersion</a> and helped with <a href="http://pulse.media.mit.edu">Place Pulse</a>.
-  	</div>
-  </div>
+  {% for area in site.data.projects %}
+    <div class="mainitem relative flex items-start">
+      <div class="uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">{{ area.area }}</div>
+      <div>
+        {% for project in area.projects %}
+          <div class="mb-12">
+            <div>
+              <a href="{{ project.link }}"><img class="project-image rounded-xl border border-gray-300" src="{{ project.image }}"></a>
+            </div>
+            <div class="mt-2">
+              <span class="font-bold text-gray-500 tracking-wide uppercase">{{ project.name }}</span>
+              <span>{{ project.description }}</span>
+            </div>
+          </div>          
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
 
   <!-- <div class="mainitem">
   	<div class="title">Blog</div>

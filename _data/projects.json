@@ -1,0 +1,54 @@
+[
+  {
+    "area": "Machine Learning",
+    "projects": [
+      {
+        "name": "TensorFlow.js",
+        "description": "A library for Machine learning in Javascript",
+        "image": "./static/images/tfjs.png",
+        "link": "https://www.tensorflow.org/js/"
+      },
+      {
+        "name": "TensorFlow Playground",
+        "description": "Tinker with a neural network, right in your browser",
+        "image": "./static/images/playground.png",
+        "link": "http://playground.tensorflow.org"
+      },
+      {
+        "name": "Embedding Projector",
+        "description": "A visualization tool for high-dimensional data",
+        "image": "./static/images/projector.png",
+        "link": "https://projector.tensorflow.org/"
+      },
+      {
+        "name": "TF Graph Visualizer",
+        "description": "Examine the dataflow graph behind TensorFlow",
+        "image": "./static/images/tfgraph.png",
+        "link": "https://www.tensorflow.org/tensorboard/graphs"
+      }
+    ]
+  },
+  {
+    "area": "Data Visualization",
+    "projects": [
+      {
+        "name": "Autovis",
+        "description": "Create charts and insights automatically, available in Google Sheets",
+        "image": "./static/images/autovis.png",
+        "link": "https://www.youtube.com/watch?v=9TiXR5wwqPs"
+      },
+      {
+        "name": "Immersion",
+        "description": "A people-centric view of your email life",
+        "image": "./static/images/immersion.png",
+        "link": "https://vimeo.com/69464265"
+      },
+      {
+        "name": "Periodic Table",
+        "description": "A twist on the classic visualization of the atomic elements",
+        "image": "./static/images/periodic.png",
+        "link": "https://research.google.com/bigpicture/elements/"
+      }
+    ]
+  }
+]
