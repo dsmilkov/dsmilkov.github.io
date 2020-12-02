@@ -4,8 +4,8 @@ title: Daniel Smilkov, Homepage
 ---
 
 <div id="home" class="text-gray-800 text-base">
-  <div class="my-10 relative flex items-start">
-    <div class="hidden lg:block uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">About</div>
+  <div class="my-10 relative flex items-start flex-col lg:flex-row">
+    <div class="uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 lg:sticky top-0 mb-4">About</div>
     <div>
       Hi there! I'm a member of the <a href="https://research.google/teams/brain/pair/">PAIR team</a>, part of <a
         href="https://research.google/teams/brain/">Google Brain</a>, working on the intersection of machine
@@ -18,8 +18,8 @@ title: Daniel Smilkov, Homepage
   </div>
 
   {% for area in site.data.projects %}
-    <div class="my-10 relative flex items-start">
-      <div class="hidden lg:block uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">{{ area.area }}</div>
+    <div class="my-10 relative flex items-start flex-col lg:flex-row">
+      <div class="uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 lg:sticky top-0 mb-4">{{ area.area }}</div>
       <div class="flex flex-wrap">
         {% for project in area.projects %}
           <div class="md:w-80 flex flex-col items-center md:mr-4 mb-12">
