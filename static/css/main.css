@@ -13,11 +13,6 @@ a {
   filter: invert(10%);
 }
 
-#header {
-  height: 25px;
-  margin-bottom: 42px;
-}
-
 #footer {
   padding-bottom: 10px;
   border-top: 1px solid #555;
