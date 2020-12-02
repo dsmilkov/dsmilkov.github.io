@@ -4,7 +4,7 @@ title: Daniel Smilkov, Homepage
 ---
 
 <div id="home" class="text-gray-800 text-base">
-  <div class="mainitem relative flex items-start">
+  <div class="my-10 relative flex items-start">
     <div class="hidden lg:block uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">About</div>
     <div>
       Hi there! I'm a member of the <a href="https://research.google/teams/brain/pair/">PAIR team</a>, part of <a
@@ -18,11 +18,11 @@ title: Daniel Smilkov, Homepage
   </div>
 
   {% for area in site.data.projects %}
-    <div class="mainitem relative flex items-start">
+    <div class="my-10 relative flex items-start">
       <div class="hidden lg:block uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">{{ area.area }}</div>
-      <div>
+      <div class="w-full">
         {% for project in area.projects %}
-          <div class="mb-12">
+          <div class="w-full flex flex-col items-center mb-12">
             <div>
               <a href="{{ project.link }}"><img class="project-image rounded-xl border border-gray-300" src="{{ project.image }}"></a>
             </div>
@@ -35,25 +35,4 @@ title: Daniel Smilkov, Homepage
       </div>
     </div>
   {% endfor %}
-
-  <!-- <div class="mainitem">
-  	<div class="title">Blog</div>
-  	<div class="text">
-  		<ul class="posts">
-	    	{% for post in site.posts %}
-	      		<li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
-	    	{% endfor %}
-	  	</ul>
-  	</div>
-  </div> -->
-  <!-- <div class="mainitem">
-  	<div class="title">CV</div>
-  	<div class="text">
-  		You can download my cv <a href="/static/cv-daniel-smilkov.pdf">here</a>. For list of publications you can visit my <a href="http://scholar.google.com/citations?user=Ei7OL8IAAAAJ&hl=en">Google Scholar</a> profile.
-  	</div>
-  </div> -->
-  <!-- <div class="title">Projects</div>
-  <div class="title">Publications</div>
-  <div class="title">Blog posts</div>
-   -->
 </div>
