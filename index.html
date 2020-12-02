@@ -20,9 +20,9 @@ title: Daniel Smilkov, Homepage
   {% for area in site.data.projects %}
     <div class="my-10 relative flex items-start">
       <div class="hidden lg:block uppercase tracking-wide font-light pt-2 text-xl w-52 flex-shrink-0 sticky top-0">{{ area.area }}</div>
-      <div class="w-full">
+      <div class="flex flex-wrap">
         {% for project in area.projects %}
-          <div class="w-full flex flex-col items-center mb-12">
+          <div class="md:w-80 flex flex-col items-center md:mr-4 mb-12">
             <div>
               <a href="{{ project.link }}"><img class="project-image rounded-xl border border-gray-300" src="{{ project.image }}"></a>
             </div>
