@@ -3,6 +3,12 @@
     "area": "Machine Learning",
     "projects": [
       {
+        "name": "Know Your Data",
+        "description": "Understand ML data and improve quality, fairness and bias issues",
+        "image": "./static/images/kyd.png",
+        "link": "https://knowyourdata.withgoogle.com/"
+      },
+      {
         "name": "TensorFlow.js",
         "description": "A library for Machine learning in Javascript",
         "image": "./static/images/tfjs.png",
